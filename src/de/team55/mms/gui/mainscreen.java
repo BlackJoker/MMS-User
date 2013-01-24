@@ -2,6 +2,7 @@ package de.team55.mms.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -16,7 +17,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class mainscreen {
 
@@ -80,7 +86,7 @@ public class mainscreen {
 		btnModulVerwaltung.setPreferredSize(btnSz);
 		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		//Jemand ne bessere idee für einen Button mit Zeilenumbruch?
+		// Jemand ne bessere idee für einen Button mit Zeilenumbruch?
 		JButton btnMHB = new JButton("<html>Modulhandbücher<br>Durchstöbern");
 		left.add(btnMHB);
 		btnMHB.setEnabled(false);
@@ -117,18 +123,65 @@ public class mainscreen {
 		cards.add(usrmg, "user managment");
 		usrmg.setLayout(new BorderLayout(0, 0));
 
-		JPanel leiste = new JPanel();
-		FlowLayout flowLayout_1 = (FlowLayout) leiste.getLayout();
-		flowLayout_1.setAlignment(FlowLayout.RIGHT);
-		usrmg.add(leiste, BorderLayout.SOUTH);
+		JPanel usrpan = new JPanel();
+		FlowLayout fl_usrpan = (FlowLayout) usrpan.getLayout();
+		fl_usrpan.setAlignment(FlowLayout.RIGHT);
+		usrmg.add(usrpan, BorderLayout.SOUTH);
 
-		JButton btnHome = new JButton("Zurück");
-		btnHome.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				((CardLayout) cards.getLayout()).first(cards);
+		JButton btnUserAdd = new JButton("User hinzuf\u00FCgen");
+		btnUserAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		leiste.add(btnHome);
+		usrpan.add(btnUserAdd);
+
+		JButton btnUserEdit = new JButton("User bearbeiten");
+		btnUserEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		usrpan.add(btnUserEdit);
+
+		JButton btnUserDel = new JButton("User l\u00F6schen");
+		btnUserDel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		usrpan.add(btnUserDel);
+
+		JButton btnHome = new JButton("Zurück");
+		usrpan.add(btnHome);
+
+		JPanel usrcenter = new JPanel();
+		usrmg.add(usrcenter, BorderLayout.CENTER);
+		usrcenter.setLayout(new BorderLayout(5, 5));
+
+		JTable usrtbl = new JTable();
+		// panel.add(table);
+		JScrollPane ussrscp = new JScrollPane(usrtbl);
+		usrtbl.setBorder(new LineBorder(new Color(0, 0, 0)));
+		usrtbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		DefaultTableModel tmodel = new DefaultTableModel(new Object[][] { {
+				"Max Muster", "Admin", "mma", "pass123" } }, new String[] {
+				"Name", "Rolle/Rechte", "Login", "Password" }) {
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// all cells false
+				return false;
+			}
+
+			Class[] columnTypes = new Class[] { String.class, String.class,
+					String.class, String.class };
+
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		};
+
+		usrtbl.setModel(tmodel);
+		usrcenter.add(ussrscp);
+		JPanel leftpan = new JPanel();
+		frame.getContentPane().add(leftpan, BorderLayout.WEST);
 
 	}
 
