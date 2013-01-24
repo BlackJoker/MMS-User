@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,83 +21,16 @@ import javax.swing.SwingConstants;
 public class mainscreen {
 
 	private JFrame frame;
-	private final Dimension btnSz = new Dimension(140, 40);
+	private final Dimension btnSz = new Dimension(140, 50);
 
 	public mainscreen() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 640, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JPanel left = new JPanel();
-		frame.getContentPane().add(left, BorderLayout.WEST);
-		left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
-
-		Component verticalGlue_2 = Box.createVerticalGlue();
-		left.add(verticalGlue_2);
-
-		JButton btnModulEinreichen = new JButton("Modul Einreichen");
-		btnModulEinreichen.setEnabled(false);
-		btnModulEinreichen.setPreferredSize(btnSz);
-		btnModulEinreichen.setAlignmentX(Component.CENTER_ALIGNMENT);
-		left.add(btnModulEinreichen);
-
-		Component verticalGlue_1 = Box.createVerticalGlue();
-		left.add(verticalGlue_1);
-
-		JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
-		btnModulBearbeiten.setEnabled(false);
-		btnModulBearbeiten.setPreferredSize(btnSz);
-		btnModulBearbeiten.setAlignmentX(Component.CENTER_ALIGNMENT);
-		left.add(btnModulBearbeiten);
-
-		Component verticalGlue = Box.createVerticalGlue();
-		left.add(verticalGlue);
-
-		JButton btnLogin = new JButton("Einloggen");
-		btnLogin.setEnabled(false);
-		btnLogin.setPreferredSize(btnSz);
-		btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
-		left.add(btnLogin);
-
-		Component verticalGlue_3 = Box.createVerticalGlue();
-		left.add(verticalGlue_3);
-
 		final JPanel cards = new JPanel();
 		frame.getContentPane().add(cards, BorderLayout.CENTER);
 		cards.setLayout(new CardLayout(0, 0));
-
-		JButton btnUserVerwaltung = new JButton("User Verwaltung");
-		btnUserVerwaltung.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				((CardLayout) cards.getLayout()).show(cards, "user managment");
-
-			}
-		});
-		btnUserVerwaltung.setPreferredSize(btnSz);
-		btnUserVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
-		left.add(btnUserVerwaltung);
-
-		Component verticalGlue_4 = Box.createVerticalGlue();
-		left.add(verticalGlue_4);
-
-		JButton btnModulVerwaltung = new JButton("Modul Verwaltung");
-		btnModulVerwaltung.setEnabled(false);
-		btnModulVerwaltung.setPreferredSize(btnSz);
-		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
-		left.add(btnModulVerwaltung);
-
-		Component verticalGlue_5 = Box.createVerticalGlue();
-		left.add(verticalGlue_5);
-
-		JButton btnMHB = new JButton("<html>Modulhandbücher<br>Durchstöbern");
-		btnMHB.setEnabled(false);
-		btnMHB.setPreferredSize(btnSz);
-		btnMHB.setAlignmentX(Component.CENTER_ALIGNMENT);
-		left.add(btnMHB);
-
-		Component verticalGlue_6 = Box.createVerticalGlue();
-		left.add(verticalGlue_6);
 
 		JPanel top = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) top.getLayout();
@@ -111,7 +45,7 @@ public class mainscreen {
 
 		JPanel welcome = new JPanel();
 		FlowLayout flowLayout_2 = (FlowLayout) welcome.getLayout();
-		flowLayout_2.setVgap(25);
+		flowLayout_2.setVgap(20);
 		cards.add(welcome, "welcome page");
 
 		JLabel lblNewLabel = new JLabel("Hier k\u00F6nnte ihre Werbung stehen");
@@ -128,6 +62,56 @@ public class mainscreen {
 
 		JButton btnHome = new JButton("Zurück");
 		leiste.add(btnHome);
+
+		JPanel leftpan = new JPanel();
+		frame.getContentPane().add(leftpan, BorderLayout.WEST);
+
+		JPanel left = new JPanel();
+		leftpan.add(left);
+		left.setLayout(new GridLayout(0, 1, 5, 20));
+
+		JButton btnModulEinreichen = new JButton("Modul Einreichen");
+		left.add(btnModulEinreichen);
+		btnModulEinreichen.setEnabled(false);
+		btnModulEinreichen.setPreferredSize(btnSz);
+		btnModulEinreichen.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JButton btnModulBearbeiten = new JButton("Modul bearbeiten");
+		left.add(btnModulBearbeiten);
+		btnModulBearbeiten.setEnabled(false);
+		btnModulBearbeiten.setPreferredSize(btnSz);
+		btnModulBearbeiten.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JButton btnLogin = new JButton("Einloggen");
+		left.add(btnLogin);
+		btnLogin.setEnabled(false);
+		btnLogin.setPreferredSize(btnSz);
+		btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JButton btnUserVerwaltung = new JButton("User Verwaltung");
+		left.add(btnUserVerwaltung);
+		btnUserVerwaltung.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				((CardLayout) cards.getLayout()).show(cards, "user managment");
+
+			}
+		});
+		btnUserVerwaltung.setPreferredSize(btnSz);
+		btnUserVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JButton btnModulVerwaltung = new JButton("Modul Verwaltung");
+		left.add(btnModulVerwaltung);
+		btnModulVerwaltung.setEnabled(false);
+		btnModulVerwaltung.setPreferredSize(btnSz);
+		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JButton btnMHB = new JButton("<html>Modulhandbücher<br>Durchstöbern");
+		// JButton btnMHB = new JButton("Modulhandbücher Durchstöbern");
+		left.add(btnMHB);
+		btnMHB.setEnabled(false);
+		btnMHB.setPreferredSize(btnSz);
+		btnMHB.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((CardLayout) cards.getLayout()).first(cards);
