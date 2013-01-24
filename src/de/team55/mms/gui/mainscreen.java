@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
 public class mainscreen {
 
 	private JFrame frame;
+	private JPanel cards = new JPanel();
 	private final Dimension btnSz = new Dimension(140, 50);
 
 	public mainscreen() {
@@ -28,41 +29,14 @@ public class mainscreen {
 		frame.setBounds(100, 100, 640, 480);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		final JPanel cards = new JPanel();
-		frame.getContentPane().add(cards, BorderLayout.CENTER);
-		cards.setLayout(new CardLayout(0, 0));
+		centerscr();
+		topscr();
+		leftscr();
 
-		JPanel top = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) top.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
-		frame.getContentPane().add(top, BorderLayout.NORTH);
+		frame.setVisible(true);
+	}
 
-		JLabel lblMMS = new JLabel("Modul Management System");
-		lblMMS.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblMMS.setHorizontalAlignment(SwingConstants.LEFT);
-		lblMMS.setLabelFor(frame);
-		top.add(lblMMS);
-
-		JPanel welcome = new JPanel();
-		FlowLayout flowLayout_2 = (FlowLayout) welcome.getLayout();
-		flowLayout_2.setVgap(20);
-		cards.add(welcome, "welcome page");
-
-		JLabel lblNewLabel = new JLabel("Hier k\u00F6nnte ihre Werbung stehen");
-		welcome.add(lblNewLabel);
-
-		JPanel usrmg = new JPanel();
-		cards.add(usrmg, "user managment");
-		usrmg.setLayout(new BorderLayout(0, 0));
-
-		JPanel leiste = new JPanel();
-		FlowLayout flowLayout_1 = (FlowLayout) leiste.getLayout();
-		flowLayout_1.setAlignment(FlowLayout.RIGHT);
-		usrmg.add(leiste, BorderLayout.SOUTH);
-
-		JButton btnHome = new JButton("Zurück");
-		leiste.add(btnHome);
-
+	private void leftscr() {
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
 
@@ -106,18 +80,66 @@ public class mainscreen {
 		btnModulVerwaltung.setPreferredSize(btnSz);
 		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		//Jemand ne bessere idee für einen Button mit Zeilenumbruch?
 		JButton btnMHB = new JButton("<html>Modulhandbücher<br>Durchstöbern");
-		// JButton btnMHB = new JButton("Modulhandbücher Durchstöbern");
 		left.add(btnMHB);
 		btnMHB.setEnabled(false);
 		btnMHB.setPreferredSize(btnSz);
 		btnMHB.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	}
+
+	public void topscr() {
+		JPanel top = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) top.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		frame.getContentPane().add(top, BorderLayout.NORTH);
+
+		JLabel lblMMS = new JLabel("Modul Management System");
+		lblMMS.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblMMS.setHorizontalAlignment(SwingConstants.LEFT);
+		lblMMS.setLabelFor(frame);
+		top.add(lblMMS);
+	}
+
+	public void centerscr() {
+
+		frame.getContentPane().add(cards, BorderLayout.CENTER);
+		cards.setLayout(new CardLayout(0, 0));
+
+		homecard();
+		usermgtcard();
+
+	}
+
+	private void usermgtcard() {
+		JPanel usrmg = new JPanel();
+		cards.add(usrmg, "user managment");
+		usrmg.setLayout(new BorderLayout(0, 0));
+
+		JPanel leiste = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) leiste.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.RIGHT);
+		usrmg.add(leiste, BorderLayout.SOUTH);
+
+		JButton btnHome = new JButton("Zurück");
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((CardLayout) cards.getLayout()).first(cards);
 			}
 		});
-		
-		frame.setVisible(true);
+		leiste.add(btnHome);
+
+	}
+
+	private void homecard() {
+		JPanel welcome = new JPanel();
+		FlowLayout flowLayout_2 = (FlowLayout) welcome.getLayout();
+		flowLayout_2.setVgap(20);
+		cards.add(welcome, "welcome page");
+
+		JLabel lblNewLabel = new JLabel("Hier könnte ihre Werbung stehen");
+		welcome.add(lblNewLabel);
+
 	}
 }
