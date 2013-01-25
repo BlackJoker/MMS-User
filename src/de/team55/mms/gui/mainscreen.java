@@ -2,6 +2,7 @@ package de.team55.mms.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Checkbox;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -14,20 +15,26 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import de.team55.mms.function.User;
+
 public class mainscreen {
 
 	private JFrame frame;
 	private JPanel cards = new JPanel();
+	private DefaultTableModel tmodel;
 	private final Dimension btnSz = new Dimension(140, 50);
 
 	public mainscreen() {
@@ -128,42 +135,19 @@ public class mainscreen {
 		fl_usrpan.setAlignment(FlowLayout.RIGHT);
 		usrmg.add(usrpan, BorderLayout.SOUTH);
 
-		JButton btnUserAdd = new JButton("User hinzuf\u00FCgen");
-		btnUserAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		usrpan.add(btnUserAdd);
-
-		JButton btnUserEdit = new JButton("User bearbeiten");
-		btnUserEdit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		usrpan.add(btnUserEdit);
-
-		JButton btnUserDel = new JButton("User l\u00F6schen");
-		btnUserDel.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		usrpan.add(btnUserDel);
-
-		JButton btnHome = new JButton("Zurück");
-		usrpan.add(btnHome);
-
-		JPanel usrcenter = new JPanel();
-		usrmg.add(usrcenter, BorderLayout.CENTER);
-		usrcenter.setLayout(new BorderLayout(5, 5));
-
-		JTable usrtbl = new JTable();
-		// panel.add(table);
+		final JTable usrtbl = new JTable();
 		JScrollPane ussrscp = new JScrollPane(usrtbl);
 		usrtbl.setBorder(new LineBorder(new Color(0, 0, 0)));
 		usrtbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		DefaultTableModel tmodel = new DefaultTableModel(new Object[][] { {
-				"Max Muster", "Admin", "mma", "pass123" } }, new String[] {
-				"Name", "Rolle/Rechte", "Login", "Password" }) {
+
+		//
+		// Inhalt der Tabelle
+		//
+		tmodel = new DefaultTableModel(new Object[][] { { "Max", "Muster",
+				"max@home.de", "pass123", true, false, false, true } },
+				new String[] { "Vorname", "Nachnahme", "e-Mail", "Password",
+						"User bearbeiten", "Module einreichen",
+						"Module Annehmen", "Module lesen" }) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				// all cells false
@@ -171,7 +155,8 @@ public class mainscreen {
 			}
 
 			Class[] columnTypes = new Class[] { String.class, String.class,
-					String.class, String.class };
+					String.class, String.class, boolean.class, boolean.class,
+					boolean.class, boolean.class };
 
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
@@ -179,6 +164,104 @@ public class mainscreen {
 		};
 
 		usrtbl.setModel(tmodel);
+
+		JButton btnUserAdd = new JButton("User hinzufügen");
+		btnUserAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				userdialog dlg = new userdialog(frame, "User hinzufügen");
+				int response = dlg.showCustomDialog();
+				// Wenn ok gedückt wird
+				// neuen User abfragen
+				if (response == 1) {
+					User tmp = dlg.getUser();
+					/*
+					 * abfrage aus Datenbank, ob User schon existiert
+					 * 
+					 * if(checkUser(tmp)){
+					 * 
+					 * } else Eintragen!
+					 */
+
+					// Vorläufig einfach in Tabelle eintragen
+					addToTable(tmp);
+				}
+			}
+
+		});
+		usrpan.add(btnUserAdd);
+
+		JButton btnUserEdit = new JButton("User bearbeiten");
+		btnUserEdit.setToolTipText("Zum Bearbeiten Benutzer in der Tabelle markieren");
+		btnUserEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int row = usrtbl.getSelectedRow();
+				if (row != -1) {
+					String vn = (String) usrtbl.getValueAt(row, 0);
+					String nn = (String) usrtbl.getValueAt(row, 1);
+					String em = (String) usrtbl.getValueAt(row, 2);
+					String pw = (String) usrtbl.getValueAt(row, 3);
+					boolean r1 = (boolean) usrtbl.getValueAt(row, 4);
+					boolean r2 = (boolean) usrtbl.getValueAt(row, 5);
+					boolean r3 = (boolean) usrtbl.getValueAt(row, 6);
+					boolean r4 = (boolean) usrtbl.getValueAt(row, 7);
+					User alt = new User(vn, nn, em, pw, r1, r2, r3, r4);
+
+					userdialog dlg = new userdialog(frame, "User hinzufügen",
+							alt);
+					int response = dlg.showCustomDialog();
+					// Wenn ok gedückt wird
+					// neuen User abfragen
+					if (response == 1) {
+						User tmp = dlg.getUser();
+
+						// Prüfen, ob was verändert wurde
+						if (!tmp.equals(alt)) {
+
+							/*
+							 * abfrage aus Datenbank, ob User schon existiert
+							 * 
+							 * if(checkUser(tmp)){
+							 * 
+							 * } else Eintragen! und alten löschen
+							 */
+
+							// Vorläufig einfach in Tabelle eintragen, alten
+							// entfernen
+							removeFromTable(row);
+							addToTable(tmp);
+						}
+					}
+				}
+			}
+		});
+		usrpan.add(btnUserEdit);
+
+		JButton btnUserDel = new JButton("User löschen");
+		btnUserDel.setToolTipText("Zum Löschen Benutzer in der Tabelle markieren");
+		btnUserDel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int row = usrtbl.getSelectedRow();
+				if (row != -1) {
+					
+					//Vorläufig aus Tabelle löschen
+					removeFromTable(row);
+				}
+			}
+		});
+		usrpan.add(btnUserDel);
+
+		JButton btnHome = new JButton("Zurück");
+		btnHome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((CardLayout) cards.getLayout()).first(cards);
+			}
+		});
+		usrpan.add(btnHome);
+
+		JPanel usrcenter = new JPanel();
+		usrmg.add(usrcenter, BorderLayout.CENTER);
+		usrcenter.setLayout(new BorderLayout(5, 5));
+
 		usrcenter.add(ussrscp);
 		JPanel leftpan = new JPanel();
 		frame.getContentPane().add(leftpan, BorderLayout.WEST);
@@ -195,4 +278,16 @@ public class mainscreen {
 		welcome.add(lblNewLabel);
 
 	}
+
+	private void addToTable(User usr) {
+		tmodel.addRow(new Object[] { usr.getVorname(), usr.getNachname(),
+				usr.geteMail(), usr.getPassword(), usr.getManageUsers(),
+				usr.getCreateModule(), usr.getAcceptModule(),
+				usr.getReadModule() });
+	}
+
+	private void removeFromTable(int rowid) {
+		tmodel.removeRow(rowid);
+	}
+
 }
