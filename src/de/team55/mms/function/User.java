@@ -11,8 +11,8 @@ public class User {
 	private boolean acceptModule;
 
 	public User(String Vorname, String Nachname, String eMail, String Password,
-			boolean manageUsers, boolean readModule, boolean createModule,
-			boolean acceptModule) {
+			boolean manageUsers, boolean createModule, boolean acceptModule,
+			boolean readModule) {
 
 		this.Vorname = Vorname;
 		this.Nachname = Nachname;
