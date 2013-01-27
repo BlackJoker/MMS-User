@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -28,6 +29,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import de.team55.mms.db.sql;
 import de.team55.mms.function.User;
 
 public class mainscreen {
@@ -36,6 +38,8 @@ public class mainscreen {
 	private JPanel cards = new JPanel();
 	private DefaultTableModel tmodel;
 	private final Dimension btnSz = new Dimension(140, 50);
+	public sql database = new sql();
+	private LinkedList<User> worklist = null;
 
 	public mainscreen() {
 		frame = new JFrame();
@@ -93,8 +97,8 @@ public class mainscreen {
 		btnModulVerwaltung.setPreferredSize(btnSz);
 		btnModulVerwaltung.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// Jemand ne bessere idee für einen Button mit Zeilenumbruch?
-		JButton btnMHB = new JButton("<html>Modulhandbücher<br>Durchstöbern");
+		// Jemand ne bessere idee fÃ¼r einen Button mit Zeilenumbruch?
+		JButton btnMHB = new JButton("<html>ModulhandbÃ¼cher<br>DurchstÃ¶bern");
 		left.add(btnMHB);
 		btnMHB.setEnabled(false);
 		btnMHB.setPreferredSize(btnSz);
@@ -143,8 +147,7 @@ public class mainscreen {
 		//
 		// Inhalt der Tabelle
 		//
-		tmodel = new DefaultTableModel(new Object[][] { { "Max", "Muster",
-				"max@home.de", "pass123", true, false, false, true } },
+		tmodel = new DefaultTableModel(new Object[][] {  },
 				new String[] { "Vorname", "Nachnahme", "e-Mail", "Password",
 						"User bearbeiten", "Module einreichen",
 						"Module Annehmen", "Module lesen" }) {
@@ -164,25 +167,21 @@ public class mainscreen {
 		};
 
 		usrtbl.setModel(tmodel);
-
-		JButton btnUserAdd = new JButton("User hinzufügen");
+		worklist = database.userload();
+		for(int i = 0; i < worklist.size(); i++){
+			addToTable(worklist.get(i));
+			
+		}		
+		JButton btnUserAdd = new JButton("User hinzufÃ¼gen");
 		btnUserAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				userdialog dlg = new userdialog(frame, "User hinzufügen");
+				userdialog dlg = new userdialog(frame, "User hinzufÃ¼gen");
 				int response = dlg.showCustomDialog();
-				// Wenn ok gedückt wird
+				// Wenn ok gedÃ¼ckt wird
 				// neuen User abfragen
 				if (response == 1) {
 					User tmp = dlg.getUser();
-					/*
-					 * abfrage aus Datenbank, ob User schon existiert
-					 * 
-					 * if(checkUser(tmp)){
-					 * 
-					 * } else Eintragen!
-					 */
-
-					// Vorläufig einfach in Tabelle eintragen
+					database.usersave(tmp);
 					addToTable(tmp);
 				}
 			}
@@ -206,51 +205,38 @@ public class mainscreen {
 					boolean r4 = (boolean) usrtbl.getValueAt(row, 7);
 					User alt = new User(vn, nn, em, pw, r1, r2, r3, r4);
 
-					userdialog dlg = new userdialog(frame, "User hinzufügen",
+					userdialog dlg = new userdialog(frame, "User hinzufÃ¼gen",
 							alt);
 					int response = dlg.showCustomDialog();
-					// Wenn ok gedückt wird
+					// Wenn ok gedÃ¼ckt wird
 					// neuen User abfragen
 					if (response == 1) {
-						User tmp = dlg.getUser();
+						User tmp = dlg.getUser();	
+						removeFromTable(row);
+						addToTable(tmp);
+						database.userupdate(tmp);
 
-						// Prüfen, ob was verändert wurde
-						if (!tmp.equals(alt)) {
-
-							/*
-							 * abfrage aus Datenbank, ob User schon existiert
-							 * 
-							 * if(checkUser(tmp)){
-							 * 
-							 * } else Eintragen! und alten löschen
-							 */
-
-							// Vorläufig einfach in Tabelle eintragen, alten
-							// entfernen
-							removeFromTable(row);
-							addToTable(tmp);
-						}
 					}
 				}
 			}
 		});
 		usrpan.add(btnUserEdit);
 
-		JButton btnUserDel = new JButton("User löschen");
-		btnUserDel.setToolTipText("Zum Löschen Benutzer in der Tabelle markieren");
+		JButton btnUserDel = new JButton("User lÃ¶schen");
+		btnUserDel.setToolTipText("Zum LÃ¶schen Benutzer in der Tabelle markieren");
 		btnUserDel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int row = usrtbl.getSelectedRow();
 				if (row != -1) {
 					
-					//Vorläufig aus Tabelle löschen
+					//VorlÃ¤ufig aus Tabelle lÃ¶schen
 					removeFromTable(row);
 				}
 			}
 		});
 		usrpan.add(btnUserDel);
 
-		JButton btnHome = new JButton("Zurück");
+		JButton btnHome = new JButton("ZurÃ¼ck");
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				((CardLayout) cards.getLayout()).first(cards);
@@ -274,7 +260,7 @@ public class mainscreen {
 		flowLayout_2.setVgap(20);
 		cards.add(welcome, "welcome page");
 
-		JLabel lblNewLabel = new JLabel("Hier könnte ihre Werbung stehen");
+		JLabel lblNewLabel = new JLabel("Hier kÃ¶nnte ihre Werbung stehen");
 		welcome.add(lblNewLabel);
 
 	}
