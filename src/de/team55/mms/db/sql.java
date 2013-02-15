@@ -200,7 +200,7 @@ public class sql {
 		Statement state = null;
 		int i = 0;
 		int j = 0;
-		LinkedList<User> list = new LinkedList<>();
+		LinkedList<User> list = new LinkedList<User>();
 		connect();
 		try{
 			state = this.con.createStatement();
